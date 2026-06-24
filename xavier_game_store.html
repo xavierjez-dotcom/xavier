@@ -1,0 +1,1193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Xavier Store - Premium Game Top-Up Portal</title>
+    <!-- Tailwind CSS for modern responsive styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons for clean UI vectors -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        /* Hide scrollbars for aesthetic clarity but preserve scroll mechanics */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-100 font-sans antialiased selection:bg-cyan-500 selection:text-slate-950 min-h-screen flex flex-col">
+
+    <div class="bg-gradient-to-r from-cyan-600 via-blue-600 to-indigo-600 text-white text-xs font-bold text-center py-2.5 px-4 tracking-wider uppercase shadow-md relative z-50">
+        ⚡ 24/7 Automated Delivery: In-Game Credits Processed Instantly via Secure UPI Gateway ⚡
+    </div>
+
+    <header class="sticky top-0 z-40 bg-slate-900/90 backdrop-blur-md border-b border-slate-800 shadow-xl">
+        <div class="max-w-6xl mx-auto px-4 h-20 flex items-center justify-between">
+            <!-- Brand Logo -->
+            <div class="flex items-center gap-3 cursor-pointer" onclick="switchTab('topup')">
+                <div class="bg-gradient-to-tr from-cyan-500 to-blue-600 text-slate-950 px-3 py-1.5 rounded font-black tracking-tighter text-lg shadow-lg shadow-cyan-500/20 hover:scale-105 transition-transform duration-200">
+                    Xavier
+                </div>
+                <div class="flex items-center gap-1">
+                    <span class="text-xl font-black tracking-wide uppercase text-white">STORE</span>
+                    <span class="text-xl animate-bounce">💎</span>
+                </div>
+            </div>
+
+            <!-- Dynamic Navigation Tabs -->
+            <nav class="hidden md:flex space-x-8 text-xs font-bold tracking-widest uppercase">
+                <button id="nav-topup" onclick="switchTab('topup')" class="text-cyan-400 border-b-2 border-cyan-400 pb-1 transition duration-200">Game Top-up</button>
+                <button id="nav-track" onclick="switchTab('track')" class="text-slate-400 hover:text-white pb-1 border-b-2 border-transparent transition duration-200">Track Order</button>
+                <button id="nav-wallet" onclick="switchTab('wallet')" class="text-slate-400 hover:text-white pb-1 border-b-2 border-transparent transition duration-200 flex items-center gap-1.5">
+                    Wallet History <span id="nav-balance-badge" class="bg-cyan-500/10 text-cyan-400 text-[10px] px-1.5 py-0.5 rounded border border-cyan-500/30">₹500.00</span>
+                </button>
+                <button id="nav-support" onclick="switchTab('support')" class="text-slate-400 hover:text-white pb-1 border-b-2 border-transparent transition duration-200">Support Desk</button>
+            </nav>
+
+            <!-- Profile & Header Quick Access -->
+            <div class="flex items-center gap-3">
+                <div class="hidden sm:flex flex-col text-right">
+                    <span class="text-[10px] text-slate-400 uppercase font-bold">Logged In As</span>
+                    <span class="text-xs text-white font-black" id="user-display-name">Player_Xavier77</span>
+                </div>
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-cyan-500 to-blue-600 p-[2px]">
+                    <div class="w-full h-full bg-slate-950 rounded-[10px] flex items-center justify-center">
+                        <i data-lucide="user" class="w-5 h-5 text-cyan-400"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div id="toast-container" class="fixed bottom-6 right-6 z-50 flex flex-col gap-3 max-w-sm w-full"></div>
+
+    <main class="flex-grow max-w-4xl w-full mx-auto px-4 py-8 space-y-8">
+        
+        <!-- ================= PAGE 1: GAME TOP-UP PORTAL ================= -->
+        <div id="page-topup" class="space-y-8 block">
+            <!-- Game selector banner with meta-data -->
+            <div class="bg-gradient-to-br from-slate-900 via-slate-900 to-slate-800/60 p-6 rounded-2xl border border-slate-800 flex flex-col sm:flex-row items-center gap-6 shadow-2xl relative overflow-hidden">
+                <div class="absolute -right-10 -bottom-10 w-40 h-40 bg-cyan-500/5 rounded-full blur-3xl"></div>
+                
+                <!-- Game Icon & Selector -->
+                <div class="relative flex-shrink-0">
+                    <div class="w-24 h-24 bg-gradient-to-tr from-cyan-950 to-slate-900 border-2 border-cyan-500/40 rounded-2xl flex items-center justify-center shadow-xl shadow-cyan-500/5 group">
+                        <i id="game-icon-display" data-lucide="gamepad-2" class="w-12 h-12 text-cyan-400 transition duration-300"></i>
+                    </div>
+                    <!-- Game Switcher Dropdown in-place -->
+                    <div class="absolute -bottom-2 left-1/2 transform -translate-x-1/2 bg-slate-850 border border-slate-700 px-2 py-0.5 rounded text-[10px] font-black uppercase text-slate-300 shadow">
+                        Active
+                    </div>
+                </div>
+
+                <div class="text-center sm:text-left flex-grow">
+                    <span class="bg-cyan-500/10 text-cyan-400 text-[10px] font-black tracking-widest uppercase px-3 py-1 rounded-full border border-cyan-500/20 inline-block mb-2">Direct ID Voucher</span>
+                    
+                    <!-- Integrated Game Dropdown selection -->
+                    <div class="flex flex-col sm:flex-row sm:items-center gap-2">
+                        <h1 id="selected-game-title" class="text-2xl font-black text-white uppercase tracking-tight">Mobile Legends: Bang Bang</h1>
+                        <select id="game-selector" onchange="changeActiveGame(this.value)" class="bg-slate-950 border border-slate-800 text-xs text-cyan-400 font-bold uppercase tracking-wider py-1 px-2.5 rounded-lg focus:border-cyan-500 focus:outline-none cursor-pointer">
+                            <option value="mlbb">Switch Game: MLBB</option>
+                            <option value="ff">Switch Game: Free Fire</option>
+                            <option value="genshin">Switch Game: Genshin Impact</option>
+                        </select>
+                    </div>
+                    
+                    <p class="text-xs text-slate-400 mt-2 max-w-xl">Enter your player metadata carefully. Your delivery voucher diamonds will route to your cloud save state instantly post checkout authorization with our automated delivery algorithm.</p>
+                </div>
+            </div>
+
+            <!-- STEP 1: Enter Player Identification -->
+            <section class="bg-slate-900 rounded-xl border border-slate-800 shadow-xl overflow-hidden transition duration-200 hover:border-slate-700/60">
+                <div class="bg-slate-800/40 px-6 py-4 border-b border-slate-800 flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <span class="w-7 h-7 bg-cyan-500 text-slate-950 font-black rounded-full flex items-center justify-center text-xs shadow-md shadow-cyan-500/20">1</span>
+                        <h2 class="font-extrabold text-sm tracking-wider uppercase text-white">Enter Player Identification</h2>
+                    </div>
+                    <span id="validation-status" class="text-[10px] bg-amber-500/10 text-amber-400 border border-amber-500/20 px-2 py-0.5 rounded-full font-bold uppercase tracking-wide flex items-center gap-1">
+                        <span class="w-1.5 h-1.5 bg-amber-400 rounded-full animate-ping"></span> Awaiting UID
+                    </span>
+                </div>
+                <div class="p-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-2.5">User ID (UID) <span class="text-cyan-400">*</span></label>
+                            <div class="relative">
+                                <input type="text" id="player-uid" placeholder="e.g., 1614004474" class="w-full bg-slate-950 border border-slate-800 focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 rounded-lg p-3.5 pl-10 text-sm font-mono text-white outline-none transition">
+                                <i data-lucide="hash" class="w-4 h-4 text-slate-500 absolute left-3.5 top-4"></i>
+                            </div>
+                        </div>
+                        <div id="zone-container">
+                            <label id="zone-label" class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-2.5">Zone ID / Server ID <span class="text-cyan-400">*</span></label>
+                            <div class="relative">
+                                <input type="text" id="player-zone" placeholder="e.g., 16799" class="w-full bg-slate-950 border border-slate-800 focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 rounded-lg p-3.5 pl-10 text-sm font-mono text-white outline-none transition">
+                                <i data-lucide="layers" class="w-4 h-4 text-slate-500 absolute left-3.5 top-4"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Auto UID validation test button -->
+                    <div class="mt-4 flex justify-end">
+                        <button type="button" onclick="triggerMockValidation()" class="text-xs bg-slate-850 hover:bg-slate-800 border border-slate-700 text-slate-300 font-bold px-4 py-2 rounded-lg transition duration-200 flex items-center gap-1.5">
+                            <i data-lucide="check-check" class="w-3.5 h-3.5 text-cyan-400"></i> Verify Player State
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- STEP 2: Select Top-Up Package -->
+            <section class="bg-slate-900 rounded-xl border border-slate-800 shadow-xl overflow-hidden transition duration-200 hover:border-slate-700/60">
+                <div class="bg-slate-800/40 px-6 py-4 border-b border-slate-800 flex items-center gap-3">
+                    <span class="w-7 h-7 bg-cyan-500 text-slate-950 font-black rounded-full flex items-center justify-center text-xs shadow-md shadow-cyan-500/20">2</span>
+                    <h2 class="font-extrabold text-sm tracking-wider uppercase text-white">Select Top-Up Package</h2>
+                </div>
+                
+                <!-- Dynamic Package Grid filled by Javascript based on active game -->
+                <div class="p-6">
+                    <div class="grid grid-cols-2 sm:grid-cols-3 gap-4" id="pack-selection-grid">
+                        <!-- Standard Packages will render dynamically -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- STEP 3: Select Payment Gateway -->
+            <section class="bg-slate-900 rounded-xl border border-slate-800 shadow-xl overflow-hidden transition duration-200 hover:border-slate-700/60">
+                <div class="bg-slate-800/40 px-6 py-4 border-b border-slate-800 flex items-center gap-3">
+                    <span class="w-7 h-7 bg-cyan-500 text-slate-950 font-black rounded-full flex items-center justify-center text-xs shadow-md shadow-cyan-500/20">3</span>
+                    <h2 class="font-extrabold text-sm tracking-wider uppercase text-white">Select Payment Gateway</h2>
+                </div>
+                <div class="p-6 grid grid-cols-1 sm:grid-cols-2 gap-4" id="payment-selection-grid">
+                    
+                    <!-- UPI payment option -->
+                    <div onclick="selectPayment(this, 'Instant UPI QR / Apps')" class="bg-slate-950 border border-slate-800 hover:border-cyan-500/50 rounded-xl p-4 flex items-center justify-between cursor-pointer transition-all duration-200 group">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 bg-emerald-500/10 text-emerald-400 rounded-lg flex items-center justify-center">
+                                <i data-lucide="qr-code" class="w-5 h-5"></i>
+                            </div>
+                            <div>
+                                <div class="text-sm font-bold text-white group-hover:text-cyan-400 transition">Instant UPI QR / Apps</div>
+                                <div class="text-[11px] text-slate-400 mt-0.5">GPay, PhonePe, Paytm, BHIM</div>
+                            </div>
+                        </div>
+                        <div class="text-emerald-500 text-xs font-black uppercase flex items-center gap-1 bg-emerald-500/5 px-2 py-0.5 rounded border border-emerald-500/20">
+                            Auto <i data-lucide="shield-check" class="w-3.5 h-3.5"></i>
+                        </div>
+                    </div>
+
+                    <!-- Wallet option -->
+                    <div onclick="selectPayment(this, 'Xavier Wallet Balance')" class="bg-slate-950 border border-slate-800 hover:border-cyan-500/50 rounded-xl p-4 flex items-center justify-between cursor-pointer transition-all duration-200 group">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 bg-cyan-500/10 text-cyan-400 rounded-lg flex items-center justify-center">
+                                <i data-lucide="wallet" class="w-5 h-5"></i>
+                            </div>
+                            <div>
+                                <div class="text-sm font-bold text-white group-hover:text-cyan-400 transition">Store Wallet Balance</div>
+                                <div class="text-[11px] text-slate-400 mt-0.5">Current Balance: <span class="font-bold text-slate-300" id="payment-wallet-text">₹500.00</span></div>
+                            </div>
+                        </div>
+                        <div class="text-cyan-400 text-xs font-black uppercase flex items-center gap-1 bg-cyan-500/5 px-2 py-0.5 rounded border border-cyan-500/20">
+                            Instant <i data-lucide="zap" class="w-3.5 h-3.5"></i>
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+
+            <!-- STEP 4: Invoice Summary & Checkout -->
+            <section class="bg-slate-900 rounded-xl border border-slate-800 shadow-2xl overflow-hidden">
+                <div class="bg-slate-800/40 px-6 py-4 border-b border-slate-800 flex items-center gap-3">
+                    <span class="w-7 h-7 bg-cyan-500 text-slate-950 font-black rounded-full flex items-center justify-center text-xs shadow-md shadow-cyan-500/20">4</span>
+                    <h2 class="font-extrabold text-sm tracking-wider uppercase text-white">Invoice Summary & Checkout</h2>
+                </div>
+                
+                <div class="p-6 bg-slate-950/40 border-b border-slate-800/60 grid grid-cols-1 sm:grid-cols-3 gap-6 text-center sm:text-left">
+                    <div>
+                        <div class="text-[11px] font-bold text-slate-400 uppercase tracking-widest">Selected Item allocation</div>
+                        <div id="checkout-item" class="text-base font-black text-white mt-1">No Item Selected</div>
+                    </div>
+                    <div>
+                        <div class="text-[11px] font-bold text-slate-400 uppercase tracking-widest">Target Platform route</div>
+                        <div id="checkout-target" class="text-base font-mono text-cyan-400 mt-1">--</div>
+                    </div>
+                    <div class="sm:text-right">
+                        <div class="text-[11px] font-bold text-slate-400 uppercase tracking-widest">Final Grand Amount</div>
+                        <div id="checkout-price" class="text-3xl font-black text-cyan-400 mt-0.5">₹0.00</div>
+                    </div>
+                </div>
+
+                <div class="p-6">
+                    <button onclick="executeOrderCheckout()" class="w-full bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-slate-950 font-black text-sm uppercase tracking-widest py-4 px-6 rounded-xl shadow-xl shadow-cyan-500/10 transition-all duration-200 flex items-center justify-center gap-2 transform hover:-translate-y-0.5">
+                        <i data-lucide="zap" class="w-4 h-4 fill-current"></i> Buy Instantly Now
+                    </button>
+                </div>
+            </section>
+        </div>
+
+
+        <!-- ================= PAGE 2: ORDER TRACKER ================= -->
+        <div id="page-track" class="space-y-8 hidden">
+            <div class="bg-slate-900 rounded-xl border border-slate-800 p-6 shadow-xl">
+                <h2 class="text-xl font-black text-white uppercase tracking-wider mb-2 flex items-center gap-2">
+                    <i data-lucide="search" class="w-5 h-5 text-cyan-400"></i> Track In-Game Item Routing
+                </h2>
+                <p class="text-xs text-slate-400 mb-6">Enter your Transaction Hash or Order ID to query our direct API server and check delivery states in real-time.</p>
+
+                <div class="flex flex-col sm:flex-row gap-3">
+                    <div class="relative flex-grow">
+                        <input type="text" id="tracking-input-id" placeholder="e.g., TXN_3B2502FF" class="w-full bg-slate-950 border border-slate-800 focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 rounded-lg p-3.5 pl-10 text-sm font-mono text-white outline-none transition">
+                        <i data-lucide="hash" class="w-4 h-4 text-slate-500 absolute left-3.5 top-4"></i>
+                    </div>
+                    <button onclick="searchMockOrder()" class="bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold px-6 py-3.5 rounded-lg text-xs uppercase tracking-widest transition duration-200 flex items-center justify-center gap-2">
+                        <i data-lucide="search" class="w-4 h-4"></i> Query Server
+                    </button>
+                </div>
+            </div>
+
+            <!-- Tracking Timeline Render Target -->
+            <div id="tracking-result-box" class="hidden bg-slate-900 rounded-xl border border-slate-800 overflow-hidden shadow-xl animate-fade-in">
+                <div class="bg-slate-850 px-6 py-4 border-b border-slate-800 flex justify-between items-center">
+                    <div>
+                        <span class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Tracking Information</span>
+                        <div class="text-sm font-mono font-black text-cyan-400" id="track-render-id">TXN_3B2502FF</div>
+                    </div>
+                    <div class="text-right">
+                        <span class="text-[10px] text-slate-400 font-bold uppercase tracking-wider block">Est. Time</span>
+                        <span class="text-xs text-emerald-400 font-bold flex items-center gap-1 justify-end">
+                            <span class="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-ping"></span> Live Processing
+                        </span>
+                    </div>
+                </div>
+
+                <div class="p-6 space-y-6">
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 bg-slate-950 p-4 rounded-xl border border-slate-850 text-xs">
+                        <div>
+                            <span class="text-slate-400 block font-semibold mb-0.5">Game Targeted:</span>
+                            <span class="text-white font-bold uppercase" id="track-render-game">Mobile Legends</span>
+                        </div>
+                        <div>
+                            <span class="text-slate-400 block font-semibold mb-0.5">Player Metadata:</span>
+                            <span class="text-cyan-400 font-mono font-bold" id="track-render-uid">1614004474 (16799)</span>
+                        </div>
+                        <div>
+                            <span class="text-slate-400 block font-semibold mb-0.5">Product Allocation:</span>
+                            <span class="text-white font-bold" id="track-render-product">Weekly Pass 2x</span>
+                        </div>
+                        <div>
+                            <span class="text-slate-400 block font-semibold mb-0.5">Cost Charged:</span>
+                            <span class="text-white font-bold" id="track-render-price">₹280.00</span>
+                        </div>
+                    </div>
+
+                    <!-- Steps timeline visualizer -->
+                    <div class="relative pl-6 space-y-6 border-l-2 border-slate-850 ml-3">
+                        <!-- Step 1 -->
+                        <div class="relative">
+                            <div id="step-1-indicator" class="absolute -left-[31px] top-1 w-4 h-4 rounded-full bg-cyan-500 border-4 border-slate-950"></div>
+                            <h4 class="text-xs font-bold text-white uppercase tracking-wider">Gateway Authorization Approved</h4>
+                            <p class="text-[11px] text-slate-400 mt-1">Transaction verified securely via UPI merchant authorization. Reference handshake complete.</p>
+                        </div>
+                        <!-- Step 2 -->
+                        <div class="relative">
+                            <div id="step-2-indicator" class="absolute -left-[31px] top-1 w-4 h-4 rounded-full bg-cyan-500 border-4 border-slate-950 animate-pulse"></div>
+                            <h4 class="text-xs font-bold text-white uppercase tracking-wider">Player Meta-Verification Status</h4>
+                            <p class="text-[11px] text-slate-400 mt-1" id="step-2-text">Scanning regional server node 16799. Validating cloud state variables...</p>
+                        </div>
+                        <!-- Step 3 -->
+                        <div class="relative">
+                            <div id="step-3-indicator" class="absolute -left-[31px] top-1 w-4 h-4 rounded-full bg-slate-800 border-4 border-slate-950"></div>
+                            <h4 class="text-xs font-bold text-slate-500 uppercase tracking-wider" id="step-3-title">Server Injection Pipeline</h4>
+                            <p class="text-[11px] text-slate-500 mt-1" id="step-3-text">Awaiting server verification protocols to inject assets.</p>
+                        </div>
+                        <!-- Step 4 -->
+                        <div class="relative">
+                            <div id="step-4-indicator" class="absolute -left-[31px] top-1 w-4 h-4 rounded-full bg-slate-800 border-4 border-slate-950"></div>
+                            <h4 class="text-xs font-bold text-slate-500 uppercase tracking-wider" id="step-4-title">Final Package Delivered</h4>
+                            <p class="text-[11px] text-slate-500 mt-1" id="step-4-text">Delivery parameters validated on cloud server sync node. Non-refundable.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- ================= PAGE 3: WALLET MANAGEMENT ================= -->
+        <div id="page-wallet" class="space-y-8 hidden">
+            <!-- Balance Card -->
+            <div class="bg-gradient-to-br from-cyan-900/40 via-slate-900 to-slate-900 p-8 rounded-2xl border border-slate-800 flex flex-col md:flex-row justify-between items-center gap-6 shadow-xl relative overflow-hidden">
+                <div class="absolute -right-12 -top-12 w-48 h-48 bg-cyan-500/5 rounded-full blur-3xl"></div>
+                
+                <div class="space-y-2 text-center md:text-left">
+                    <span class="text-xs text-cyan-400 uppercase font-black tracking-widest bg-cyan-950 px-3 py-1 rounded-full border border-cyan-500/20">Secure Store Balance</span>
+                    <h2 class="text-4xl font-black text-white" id="wallet-balance-title">₹500.00</h2>
+                    <p class="text-xs text-slate-400">Pre-fund your balance using instant UPI to buy passes quickly without continuous approvals.</p>
+                </div>
+
+                <!-- Add funds directly -->
+                <div class="bg-slate-950 p-4 rounded-xl border border-slate-850 w-full md:w-auto space-y-3">
+                    <div class="text-xs font-bold text-slate-300 uppercase tracking-wide">Pre-Fund Wallet</div>
+                    <div class="flex gap-2">
+                        <input type="number" id="fund-input" placeholder="₹ Amount" class="bg-slate-900 border border-slate-800 focus:border-cyan-500 rounded-lg p-2 text-xs font-mono text-white outline-none w-24">
+                        <button onclick="addMockFunds()" class="bg-cyan-500 hover:bg-cyan-400 text-slate-950 text-xs font-extrabold px-4 py-2 rounded-lg transition duration-200">
+                            Add Funds
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Transaction History logs -->
+            <div class="bg-slate-900 rounded-xl border border-slate-800 overflow-hidden shadow-xl">
+                <div class="bg-slate-800/40 px-6 py-4 border-b border-slate-800 flex items-center justify-between">
+                    <h3 class="font-extrabold text-sm tracking-wider uppercase text-white">Wallet Transaction Ledger</h3>
+                    <span class="text-[10px] text-slate-400 font-bold uppercase">Automated Cryptographic Log</span>
+                </div>
+                
+                <div class="divide-y divide-slate-850 max-h-96 overflow-y-auto no-scrollbar" id="wallet-ledger-items">
+                    <!-- Default Items inside history ledger -->
+                    <div class="p-4 flex justify-between items-center text-xs">
+                        <div>
+                            <span class="font-bold text-white block">Wallet Onboarding Bonus</span>
+                            <span class="text-[10px] text-slate-500 font-mono">2026-06-18 08:34 UTC</span>
+                        </div>
+                        <div class="text-emerald-400 font-extrabold font-mono text-sm">+₹500.00</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- ================= PAGE 4: SUPPORT DESK CHATBOT ================= -->
+        <div id="page-support" class="space-y-8 hidden">
+            <div class="bg-slate-900 rounded-xl border border-slate-800 overflow-hidden shadow-xl flex flex-col h-[550px]">
+                
+                <!-- Chat header -->
+                <div class="bg-slate-850 px-6 py-4 border-b border-slate-800 flex justify-between items-center">
+                    <div class="flex items-center gap-3">
+                        <div class="w-8 h-8 rounded-full bg-cyan-500/10 text-cyan-400 flex items-center justify-center border border-cyan-500/20 relative">
+                            <i data-lucide="bot" class="w-4 h-4"></i>
+                            <span class="absolute bottom-0 right-0 w-2 h-2 rounded-full bg-emerald-500 border border-slate-900"></span>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-sm text-white uppercase tracking-wider">Xavier Support Bot</h3>
+                            <p class="text-[10px] text-slate-400 font-bold">Responds instantly within milliseconds</p>
+                        </div>
+                    </div>
+                    <span class="bg-cyan-500/10 text-cyan-400 text-[9px] font-black uppercase px-2.5 py-0.5 rounded border border-cyan-500/20 tracking-wider">Online</span>
+                </div>
+
+                <!-- Chat Body messages -->
+                <div id="chat-scroller" class="flex-grow p-6 overflow-y-auto space-y-4 no-scrollbar text-xs">
+                    <!-- Bot message -->
+                    <div class="flex items-start gap-2.5 max-w-[85%]">
+                        <div class="w-6 h-6 rounded-full bg-slate-800 text-cyan-400 flex items-center justify-center flex-shrink-0 text-[10px]">
+                            <i data-lucide="bot" class="w-3.5 h-3.5"></i>
+                        </div>
+                        <div class="bg-slate-850 p-3 rounded-xl border border-slate-800 text-slate-300">
+                            Greetings Player! I am the automated Xavier Server Support node. How can I help you route, verify, or configure game asset vouchers today?
+                        </div>
+                    </div>
+
+                    <!-- Bot Quick Chips selection -->
+                    <div class="flex flex-wrap gap-2 pt-2" id="chat-quick-chips">
+                        <button onclick="askBot('My transaction has not delivered diamonds yet.', this)" class="bg-slate-950 hover:bg-slate-800 border border-slate-800 text-slate-300 font-bold px-3 py-1.5 rounded-full text-[10px] transition duration-200">
+                            💎 Non-delivery Enquiry
+                        </button>
+                        <button onclick="askBot('How long does the payment gateway take?', this)" class="bg-slate-950 hover:bg-slate-800 border border-slate-800 text-slate-300 font-bold px-3 py-1.5 rounded-full text-[10px] transition duration-200">
+                            💳 Payment speed
+                        </button>
+                        <button onclick="askBot('Can I get a voucher cancellation and refund?', this)" class="bg-slate-950 hover:bg-slate-800 border border-slate-800 text-slate-300 font-bold px-3 py-1.5 rounded-full text-[10px] transition duration-200">
+                            🔄 Refund Matrix Policy
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Input section -->
+                <div class="p-4 border-t border-slate-850 bg-slate-950/60 flex gap-2">
+                    <input type="text" id="chat-input-field" onkeypress="handleChatEnter(event)" placeholder="Type details, ask about error codes or server statuses..." class="flex-grow bg-slate-950 border border-slate-850 focus:border-cyan-500 rounded-lg p-3 text-xs text-white outline-none transition">
+                    <button onclick="sendUserTextMessage()" class="bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold px-4 rounded-lg text-xs transition duration-200 flex items-center justify-center">
+                        <i data-lucide="send" class="w-4 h-4"></i>
+                    </button>
+                </div>
+
+            </div>
+        </div>
+
+    </main>
+
+    <div id="payment-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-slate-900 border border-slate-800 w-full max-w-md rounded-2xl overflow-hidden shadow-2xl relative animate-zoom-in">
+            <!-- Modal Header -->
+            <div class="bg-slate-850 px-6 py-4 border-b border-slate-800 flex justify-between items-center">
+                <div class="flex items-center gap-2">
+                    <span class="w-2.5 h-2.5 bg-emerald-500 rounded-full animate-ping"></span>
+                    <h3 class="font-extrabold text-sm tracking-wider uppercase text-white">UPI Gateway Authorized Node</h3>
+                </div>
+                <button onclick="closePaymentModal()" class="text-slate-400 hover:text-white transition">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+
+            <!-- Modal Content inside UPI simulation -->
+            <div class="p-6 space-y-6 text-center">
+                <div class="bg-slate-950 rounded-xl p-4 border border-slate-850 space-y-1">
+                    <div class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Securing Transaction Gateway</div>
+                    <div class="text-xs text-slate-300 font-medium" id="modal-product-text">Weekly Diamond Pass (2x)</div>
+                    <div class="text-2xl font-black text-cyan-400" id="modal-price-text">₹280.00</div>
+                </div>
+
+                <!-- Simulated UPI QR -->
+                <div class="mx-auto w-40 h-40 bg-white p-3 rounded-xl border-4 border-cyan-500/30 flex items-center justify-center relative">
+                    <!-- Real SVG Simulated Vector QR for beauty -->
+                    <svg viewBox="0 0 100 100" class="w-full h-full text-slate-950">
+                        <path d="M10 10h30v30H10zm0 50h30v30H10zm50-50h30v30H60z" fill="currentColor"/>
+                        <path d="M20 20h10v10H20zm0 50h10v10H20zm50-50h10v10H70z" fill="#fff"/>
+                        <path d="M45 15h10v10H45zm5 25h5v25h-5zm15 15h10v10H65zm5 10h15v15H70zM15 45h20v5H15zm35 35h10v10H50z" fill="currentColor"/>
+                    </svg>
+                    <!-- Small absolute logo at QR center -->
+                    <div class="absolute inset-0 m-auto w-8 h-8 bg-slate-950 rounded border border-cyan-500/30 flex items-center justify-center text-[10px] font-black text-cyan-400 tracking-tighter">
+                        XVR
+                    </div>
+                </div>
+
+                <div class="space-y-1 text-xs">
+                    <div class="text-white font-bold uppercase flex items-center gap-1.5 justify-center">
+                        <i data-lucide="shield-check" class="w-4 h-4 text-cyan-400"></i> Cryptographic Signature Verified
+                    </div>
+                    <p class="text-slate-400 max-w-xs mx-auto">Scan with GPay, Paytm, or PhonePe. Do not close this dynamic session while handshake is processing.</p>
+                </div>
+
+                <!-- Simulated interactive buttons to speed up demonstration of success/failure -->
+                <div class="grid grid-cols-2 gap-3 pt-2">
+                    <button onclick="failPaymentSimulator()" class="border border-red-500/30 bg-red-500/5 hover:bg-red-500/10 text-red-400 font-bold text-xs uppercase py-2.5 rounded-lg transition duration-200">
+                        Simulate Failure
+                    </button>
+                    <button onclick="successPaymentSimulator()" class="bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-xs uppercase py-2.5 rounded-lg transition duration-200">
+                        Simulate Success
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="bg-slate-950 text-slate-500 text-[11px] py-10 mt-16 border-t border-slate-900 relative z-30">
+        <div class="max-w-6xl mx-auto px-4 flex flex-col md:flex-row items-center justify-between gap-6">
+            <div class="text-center md:text-left space-y-1">
+                <p>&copy; 2026 Xavier Official Pvt. Ltd. All rights reserved.</p>
+                <p class="text-[10px] text-slate-600">In-game item deliveries are immediately injected directly on server confirmation and are non-refundable post validation.</p>
+            </div>
+            <div class="flex space-x-6 font-semibold uppercase tracking-wider">
+                <a href="#" onclick="showCustomAlert('Terms and Conditions Agreement', 'All topup activities and voucher allocation methods adhere to server publisher licensing agreements. No refund options allowed on successful server handshakes.')" class="hover:text-slate-300 transition">Terms & Conditions</a>
+                <a href="#" onclick="showCustomAlert('Refund Matrix Policy', 'If your target UID validation parameters are wrong, transaction stays pending for manual human administrative matching. If UID matches valid profiles, injection is final.')" class="hover:text-slate-300 transition">Refund Matrix</a>
+                <a href="#" onclick="showCustomAlert('API Support Gateway', 'Direct endpoint: support@xavierstore.com -- active SSL handshakes tracking port 443.')" class="hover:text-slate-300 transition">Contact API Support</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        let checkoutDetails = {
+            itemName: null,
+            itemCost: 0,
+            paymentMethod: null
+        };
+
+        // User Account Mock state
+        let userWalletBalance = 500.00;
+        let activeGame = 'mlbb'; // 'mlbb', 'ff', 'genshin'
+        let validationVerified = false;
+        
+        // Mock order repository for simulation and tracking lookup
+        let ordersDB = {
+            "TXN_3B2502FF": {
+                game: "Mobile Legends: Bang Bang",
+                uid: "1614004474 (16799)",
+                product: "Weekly Pass 2x",
+                price: 280,
+                statusStep: 3,
+                time: "2026-06-18 08:35 UTC"
+            }
+        };
+
+        // Game Configuration Database (Metadata, Packages & Styling parameters)
+        const gameDB = {
+            mlbb: {
+                title: "Mobile Legends: Bang Bang",
+                icon: "gamepad-2",
+                showZone: true,
+                zonePlaceholder: "e.g., 16799",
+                zoneLabel: "Zone ID / Server ID *",
+                uidPlaceholder: "e.g., 1614004474",
+                packages: [
+                    { id: "ml_wk_2x", name: "Weekly Diamond Pass (2x)", price: 280, tag: "Hot Deals" },
+                    { id: "ml_86", name: "86 Diamonds Pack", price: 83, tag: null },
+                    { id: "ml_172", name: "172 Diamonds Pack", price: 128, tag: null },
+                    { id: "ml_257", name: "257 Diamonds Pack", price: 253, tag: null },
+                    { id: "ml_706", name: "706 Diamonds Pack", price: 1003, tag: "Best Value" },
+                    { id: "ml_2195", name: "2195 Diamonds Pack", price: 3020, tag: null },
+                    { id: "ml_wk_1x", name: "Weekly Pass 1X", price: 160, tag: null },
+                    { id: "ml_wk_2xb", name: "2X Weekly Pass Lite", price: 220, tag: null },
+                    { id: "ml_wk_3x", name: "3X Weekly Pass Max", price: 380, tag: null }
+                ]
+            },
+            ff: {
+                title: "Free Fire Max",
+                icon: "shield",
+                showZone: false,
+                uidPlaceholder: "Player ID (e.g., 48201994)",
+                packages: [
+                    { id: "ff_100", name: "100 Diamonds + Bonus", price: 80, tag: "Best Seller" },
+                    { id: "ff_310", name: "310 Diamonds Pack", price: 240, tag: null },
+                    { id: "ff_520", name: "520 Diamonds Pack", price: 400, tag: null },
+                    { id: "ff_1060", name: "1060 Diamonds Pack", price: 790, tag: "Huge Value" },
+                    { id: "ff_2180", name: "2180 Diamonds Pack", price: 1580, tag: null },
+                    { id: "ff_wk", name: "Weekly Membership pass", price: 159, tag: "Hot" }
+                ]
+            },
+            genshin: {
+                title: "Genshin Impact",
+                icon: "sparkles",
+                showZone: true,
+                zonePlaceholder: "Server Region (e.g., America/Asia/Europe)",
+                zoneLabel: "Choose Server Region *",
+                uidPlaceholder: "UID (e.g., 812345678)",
+                packages: [
+                    { id: "gi_blessing", name: "Blessing of the Welkin Moon", price: 450, tag: "Top Pick" },
+                    { id: "gi_60", name: "60 Genesis Crystals", price: 89, tag: null },
+                    { id: "gi_300", name: "300 Genesis Crystals", price: 449, tag: null },
+                    { id: "gi_980", name: "980 Genesis Crystals", price: 1350, tag: null },
+                    { id: "gi_1980", name: "1980 Genesis Crystals", price: 2690, tag: null },
+                    { id: "gi_3280", name: "3280 Genesis Crystals", price: 4390, tag: "Bonus Crystals" }
+                ]
+            }
+        };
+
+        window.onload = function() {
+            // Initiate Icons
+            lucide.createIcons();
+            
+            // Build MLBB package grids automatically
+            renderActiveGamePackages();
+
+            // Setup real-time feedback event listeners on inputs
+            const uidField = document.getElementById('player-uid');
+            const zoneField = document.getElementById('player-zone');
+            
+            uidField.addEventListener('input', () => {
+                updateTargetDisplay();
+                resetVerificationUI();
+            });
+            if (zoneField) {
+                zoneField.addEventListener('input', () => {
+                    updateTargetDisplay();
+                    resetVerificationUI();
+                });
+            }
+        };
+
+        function switchTab(tabId) {
+            // Hide all tab sections
+            document.getElementById('page-topup').style.display = 'none';
+            document.getElementById('page-track').style.display = 'none';
+            document.getElementById('page-wallet').style.display = 'none';
+            document.getElementById('page-support').style.display = 'none';
+
+            // Reset navigation tab indicators styling
+            const navTabs = ['topup', 'track', 'wallet', 'support'];
+            navTabs.forEach(id => {
+                const el = document.getElementById(`nav-${id}`);
+                if (el) {
+                    el.className = "text-slate-400 hover:text-white pb-1 border-b-2 border-transparent transition duration-200";
+                }
+            });
+
+            // Show selected view and activate underline navigation
+            document.getElementById(`page-${tabId}`).style.display = 'block';
+            const activeNav = document.getElementById(`nav-${tabId}`);
+            if (activeNav) {
+                activeNav.className = "text-cyan-400 border-b-2 border-cyan-400 pb-1 transition duration-200";
+            }
+
+            // Sync visual indicators
+            lucide.createIcons();
+        }
+
+        function changeActiveGame(gameKey) {
+            activeGame = gameKey;
+            const config = gameDB[gameKey];
+
+            // Update title and icon
+            document.getElementById('selected-game-title').innerText = config.title;
+            const iconDisplay = document.getElementById('game-icon-display');
+            iconDisplay.setAttribute('data-lucide', config.icon);
+
+            // Re-render target server inputs configurations
+            const zoneContainer = document.getElementById('zone-container');
+            const zoneLabel = document.getElementById('zone-label');
+            const zoneField = document.getElementById('player-zone');
+            const uidField = document.getElementById('player-uid');
+
+            // Reset selected states
+            uidField.value = '';
+            uidField.placeholder = config.uidPlaceholder;
+            
+            if (config.showZone) {
+                zoneContainer.style.display = 'block';
+                zoneLabel.innerText = config.zoneLabel;
+                zoneField.value = '';
+                zoneField.placeholder = config.zonePlaceholder;
+            } else {
+                zoneContainer.style.display = 'none';
+                zoneField.value = 'N/A'; // Non applicable
+            }
+
+            // Clear checkout variables
+            checkoutDetails.itemName = null;
+            checkoutDetails.itemCost = 0;
+            document.getElementById('checkout-item').innerText = "No Item Selected";
+            document.getElementById('checkout-price').innerText = "₹0.00";
+
+            // Render matching package items
+            renderActiveGamePackages();
+            updateTargetDisplay();
+            resetVerificationUI();
+            
+            showToast(`Loaded Server Config: ${config.title}`, 'info');
+            lucide.createIcons();
+        }
+
+        function renderActiveGamePackages() {
+            const grid = document.getElementById('pack-selection-grid');
+            grid.innerHTML = ''; // wipe
+
+            const packages = gameDB[activeGame].packages;
+
+            packages.forEach(pack => {
+                const itemDiv = document.createElement('div');
+                itemDiv.className = "bg-slate-950 border border-slate-800/80 hover:border-cyan-500/50 rounded-xl p-4 text-center cursor-pointer transition relative group";
+                
+                // If there's a tag (e.g., Best Value)
+                let tagMarkup = '';
+                if (pack.tag) {
+                    const badgeColor = pack.tag.includes('Hot') ? 'bg-rose-600' : 'bg-cyan-500 text-slate-950';
+                    tagMarkup = `<span class="absolute -top-2.5 right-3 ${badgeColor} text-white text-[9px] font-black uppercase px-2 py-0.5 rounded shadow-md tracking-wider">${pack.tag}</span>`;
+                }
+
+                itemDiv.onclick = function() { selectProduct(this, pack.name, pack.price); };
+
+                itemDiv.innerHTML = `
+                    ${tagMarkup}
+                    <div class="text-cyan-400 font-extrabold text-sm tracking-tight group-hover:scale-105 transition duration-200">${pack.name}</div>
+                    <div class="text-slate-300 text-xs font-black mt-1.5">₹${pack.price.toLocaleString('en-IN')}.00</div>
+                `;
+
+                grid.appendChild(itemDiv);
+            });
+        }
+
+        function updateTargetDisplay() {
+            const uidField = document.getElementById('player-uid');
+            const zoneField = document.getElementById('player-zone');
+            const targetOutput = document.getElementById('checkout-target');
+            
+            const uid = uidField.value.trim();
+            const zone = zoneField.value.trim();
+            
+            if (uid || (gameDB[activeGame].showZone && zone && zone !== 'N/A')) {
+                const zoneText = gameDB[activeGame].showZone ? ` (${zone || '?'})` : '';
+                targetOutput.innerText = `${uid || '?'}${zoneText}`;
+            } else {
+                targetOutput.innerText = '--';
+            }
+        }
+
+        // Reset user ID verify badges on edits
+        function resetVerificationUI() {
+            validationVerified = false;
+            const badge = document.getElementById('validation-status');
+            badge.className = "text-[10px] bg-amber-500/10 text-amber-400 border border-amber-500/20 px-2 py-0.5 rounded-full font-bold uppercase tracking-wide flex items-center gap-1";
+            badge.innerHTML = `<span class="w-1.5 h-1.5 bg-amber-400 rounded-full animate-ping"></span> Awaiting UID`;
+        }
+
+        function triggerMockValidation() {
+            const uid = document.getElementById('player-uid').value.trim();
+            const zone = document.getElementById('player-zone').value.trim();
+
+            if (!uid) {
+                showToast("Please write a User ID first to verify.", "error");
+                return;
+            }
+
+            const badge = document.getElementById('validation-status');
+            badge.innerHTML = `<span class="w-1.5 h-1.5 bg-cyan-400 rounded-full animate-pulse"></span> Querying API...`;
+            badge.className = "text-[10px] bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 px-2 py-0.5 rounded-full font-bold uppercase tracking-wide flex items-center gap-1";
+
+            setTimeout(() => {
+                validationVerified = true;
+                badge.className = "text-[10px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2 py-0.5 rounded-full font-bold uppercase tracking-wide flex items-center gap-1";
+                badge.innerHTML = `<i data-lucide="shield-check" class="w-3 h-3"></i> Valid Account (XavierPro12)`;
+                showToast("Direct Server verification passed: XavierPro12 is online.", "success");
+                lucide.createIcons();
+            }, 900);
+        }
+
+        function selectProduct(element, name, price) {
+            const cards = document.querySelectorAll('#pack-selection-grid > div');
+            cards.forEach(card => {
+                card.classList.remove('border-cyan-500', 'bg-cyan-950/20');
+                card.classList.add('border-slate-800/80', 'bg-slate-950');
+            });
+
+            element.classList.remove('border-slate-800/80', 'bg-slate-950');
+            element.classList.add('border-cyan-500', 'bg-cyan-950/20');
+
+            checkoutDetails.itemName = name;
+            checkoutDetails.itemCost = price;
+
+            document.getElementById('checkout-item').innerText = name;
+            document.getElementById('checkout-price').innerText = `₹${price.toLocaleString('en-IN')}.00`;
+            showToast(`Product selected: ${name}`, 'success');
+        }
+
+        function selectPayment(element, method) {
+            const cards = document.querySelectorAll('#payment-selection-grid > div');
+            cards.forEach(card => {
+                card.classList.remove('border-cyan-500', 'bg-cyan-950/20');
+                card.classList.add('border-slate-800/80', 'bg-slate-950');
+            });
+
+            element.classList.remove('border-slate-800/80', 'bg-slate-950');
+            element.classList.add('border-cyan-500', 'bg-cyan-950/20');
+
+            checkoutDetails.paymentMethod = method;
+            showToast(`Payment route set to: ${method}`, 'info');
+        }
+
+        function executeOrderCheckout() {
+            const uid = document.getElementById('player-uid').value.trim();
+            const zone = document.getElementById('player-zone').value.trim();
+
+            if (!uid) {
+                showCustomAlert("Validation Alert", "Player User ID details cannot be empty.");
+                return;
+            }
+            if (gameDB[activeGame].showZone && !zone) {
+                showCustomAlert("Validation Alert", "Server Area Zone ID configuration cannot be empty.");
+                return;
+            }
+            if (!checkoutDetails.itemName) {
+                showCustomAlert("Validation Alert", "Please pick an item package bundle from step 2 to process allocation.");
+                return;
+            }
+            if (!checkoutDetails.paymentMethod) {
+                showCustomAlert("Validation Alert", "Choose your secure transaction routing network channel from step 3.");
+                return;
+            }
+
+            // Route 1: Wallet Balance processing
+            if (checkoutDetails.paymentMethod === 'Xavier Wallet Balance') {
+                if (userWalletBalance < checkoutDetails.itemCost) {
+                    showCustomAlert("Insufficient Funds", "Your store balance is insufficient. Please navigate to the Wallet history tab to pre-fund or pay instantly using UPI.");
+                    return;
+                }
+                
+                // Process wallet subtraction
+                userWalletBalance -= checkoutDetails.itemCost;
+                updateWalletBalancesDisplay();
+                
+                // Add success log
+                const txnId = `TXN_WL${Math.random().toString(36).substr(2, 6).toUpperCase()}`;
+                addTransactionToLedger(txnId, `Top-Up Allocation: ${checkoutDetails.itemName}`, -checkoutDetails.itemCost);
+                
+                // Register in tracking DB
+                ordersDB[txnId] = {
+                    game: gameDB[activeGame].title,
+                    uid: `${uid} ${gameDB[activeGame].showZone ? '(' + zone + ')' : ''}`,
+                    product: checkoutDetails.itemName,
+                    price: checkoutDetails.itemCost,
+                    statusStep: 4, // Instant delivery for wallets
+                    time: new Date().toISOString()
+                };
+
+                showCustomAlert("Wallet Payment Approved", `Your transaction was processed instantly via secure Store Wallet Balance. Order reference created: ${txnId}. Item routed.`);
+                // Route user to Track page instantly
+                document.getElementById('tracking-input-id').value = txnId;
+                searchMockOrder();
+                switchTab('track');
+                return;
+            }
+
+            // Route 2: UPI dynamic modal launcher
+            if (checkoutDetails.paymentMethod === 'Instant UPI QR / Apps') {
+                document.getElementById('modal-product-text').innerText = checkoutDetails.itemName;
+                document.getElementById('modal-price-text').innerText = `₹${checkoutDetails.itemCost.toLocaleString('en-IN')}.00`;
+                document.getElementById('payment-modal').classList.remove('hidden');
+                return;
+            }
+        }
+
+        function closePaymentModal() {
+            document.getElementById('payment-modal').classList.add('hidden');
+        }
+
+        function failPaymentSimulator() {
+            closePaymentModal();
+            showCustomAlert("Payment Aborted", "The UPI gateway request was terminated or timed out. Wallet and game profiles have not been debited.");
+        }
+
+        function successPaymentSimulator() {
+            closePaymentModal();
+            const uid = document.getElementById('player-uid').value.trim();
+            const zone = document.getElementById('player-zone').value.trim();
+
+            const txnId = `TXN_${Math.random().toString(36).substr(2, 8).toUpperCase()}`;
+            
+            // Log into our server ordersDB representation
+            ordersDB[txnId] = {
+                game: gameDB[activeGame].title,
+                uid: `${uid} ${gameDB[activeGame].showZone ? '(' + zone + ')' : ''}`,
+                product: checkoutDetails.itemName,
+                price: checkoutDetails.itemCost,
+                statusStep: 1, // Start state
+                time: new Date().toISOString()
+            };
+
+            showCustomAlert(
+                "Payment Success", 
+                `API signature received. Automated delivery pipeline initiated. Order ID: ${txnId}. Proceeding to Live Delivery tracker...`
+            );
+
+            // Redirect user to track view
+            document.getElementById('tracking-input-id').value = txnId;
+            searchMockOrder();
+            switchTab('track');
+
+            // Begin simulated background delivery injection timer
+            startSimulatedServerDelivery(txnId);
+        }
+
+        function startSimulatedServerDelivery(txnId) {
+            let order = ordersDB[txnId];
+            if (!order) return;
+
+            // Shift from step 1 (approved) to 2 (validating) inside 3 seconds
+            setTimeout(() => {
+                if (ordersDB[txnId]) {
+                    ordersDB[txnId].statusStep = 2;
+                    if (document.getElementById('tracking-input-id').value === txnId && document.getElementById('page-track').style.display !== 'none') {
+                        searchMockOrder(); // live refresh visualizer
+                    }
+                    showToast(`Order ${txnId}: Verified UID parameters.`, "info");
+                }
+            }, 3000);
+
+            // Shift to Step 3 (server injection) inside 6 seconds
+            setTimeout(() => {
+                if (ordersDB[txnId]) {
+                    ordersDB[txnId].statusStep = 3;
+                    if (document.getElementById('tracking-input-id').value === txnId && document.getElementById('page-track').style.display !== 'none') {
+                        searchMockOrder();
+                    }
+                    showToast(`Order ${txnId}: Injecting crystals through main SSL API.`, "info");
+                }
+            }, 6000);
+
+            // Complete injection (Step 4) inside 10 seconds
+            setTimeout(() => {
+                if (ordersDB[txnId]) {
+                    ordersDB[txnId].statusStep = 4;
+                    if (document.getElementById('tracking-input-id').value === txnId && document.getElementById('page-track').style.display !== 'none') {
+                        searchMockOrder();
+                    }
+                    showToast(`Order ${txnId} successfully delivered!`, "success");
+                }
+            }, 10000);
+        }
+
+        // Query Search on track view
+        function searchMockOrder() {
+            const inputVal = document.getElementById('tracking-input-id').value.trim();
+            const resultBox = document.getElementById('tracking-result-box');
+
+            if (!inputVal) {
+                showToast("Please write down an Order reference hash.", "error");
+                return;
+            }
+
+            const order = ordersDB[inputVal];
+            if (!order) {
+                showToast("No active order matching this reference found on secure node.", "error");
+                resultBox.classList.add('hidden');
+                return;
+            }
+
+            // Fill text fields
+            document.getElementById('track-render-id').innerText = inputVal;
+            document.getElementById('track-render-game').innerText = order.game;
+            document.getElementById('track-render-uid').innerText = order.uid;
+            document.getElementById('track-render-product').innerText = order.product;
+            document.getElementById('track-render-price').innerText = `₹${order.price.toLocaleString('en-IN')}.00`;
+
+            // Reset visual indicators classes
+            resetIndicatorStates();
+
+            // Set states sequentially based on order statusStep
+            const step = order.statusStep;
+            
+            // Step 1: Gateway Approval
+            if (step >= 1) {
+                setStepVerified('step-1-indicator');
+            }
+            // Step 2: Verification variables check
+            if (step >= 2) {
+                setStepVerified('step-2-indicator');
+                document.getElementById('step-2-text').innerText = "Meta verification complete. Player account is validated on cloud server nodes.";
+            } else {
+                setStepPending('step-2-indicator');
+                document.getElementById('step-2-text').innerText = "Scanning regional server node. Validating cloud state variables...";
+            }
+            // Step 3: Injection Pipeline
+            const step3Title = document.getElementById('step-3-title');
+            const step3Text = document.getElementById('step-3-text');
+            if (step >= 3) {
+                setStepVerified('step-3-indicator');
+                step3Title.className = "text-xs font-bold text-white uppercase tracking-wider";
+                step3Text.className = "text-[11px] text-slate-400 mt-1";
+                step3Text.innerText = "Injection parameters approved. Direct API server injection finished successfully.";
+            } else {
+                setStepPending('step-3-indicator');
+                step3Title.className = "text-xs font-bold text-slate-500 uppercase tracking-wider";
+                step3Text.className = "text-[11px] text-slate-500 mt-1";
+                step3Text.innerText = "Awaiting server verification protocols to inject assets.";
+            }
+            // Step 4: Finished Delivery
+            const step4Title = document.getElementById('step-4-title');
+            const step4Text = document.getElementById('step-4-text');
+            if (step >= 4) {
+                setStepVerified('step-4-indicator');
+                step4Title.className = "text-xs font-bold text-emerald-400 uppercase tracking-wider";
+                step4Text.className = "text-[11px] text-slate-400 mt-1";
+                step4Text.innerText = "Assets credited. Non-refundable parameter set. Thank you for using Xavier Store!";
+            } else {
+                setStepPending('step-4-indicator');
+                step4Title.className = "text-xs font-bold text-slate-500 uppercase tracking-wider";
+                step4Text.className = "text-[11px] text-slate-500 mt-1";
+                step4Text.innerText = "Delivery parameters validated on cloud server sync node. Non-refundable.";
+            }
+
+            resultBox.classList.remove('hidden');
+            lucide.createIcons();
+        }
+
+        // Timeline Step styling helpers
+        function resetIndicatorStates() {
+            const indicators = ['step-1-indicator', 'step-2-indicator', 'step-3-indicator', 'step-4-indicator'];
+            indicators.forEach(ind => {
+                const el = document.getElementById(ind);
+                el.className = "absolute -left-[31px] top-1 w-4 h-4 rounded-full bg-slate-800 border-4 border-slate-950";
+            });
+        }
+
+        function setStepVerified(elementId) {
+            const el = document.getElementById(elementId);
+            el.className = "absolute -left-[31px] top-1 w-4 h-4 rounded-full bg-cyan-500 border-4 border-slate-950";
+        }
+
+        function setStepPending(elementId) {
+            const el = document.getElementById(elementId);
+            el.className = "absolute -left-[31px] top-1 w-4 h-4 rounded-full bg-slate-800 border-4 border-slate-950 animate-pulse";
+        }
+
+
+        function updateWalletBalancesDisplay() {
+            document.getElementById('nav-balance-badge').innerText = `₹${userWalletBalance.toLocaleString('en-IN')}.00`;
+            document.getElementById('payment-wallet-text').innerText = `₹${userWalletBalance.toLocaleString('en-IN')}.00`;
+            document.getElementById('wallet-balance-title').innerText = `₹${userWalletBalance.toLocaleString('en-IN')}.00`;
+        }
+
+        function addMockFunds() {
+            const fundInput = document.getElementById('fund-input');
+            const amount = parseFloat(fundInput.value);
+
+            if (isNaN(amount) || amount <= 0) {
+                showToast("Please write a valid deposit amount.", "error");
+                return;
+            }
+
+            userWalletBalance += amount;
+            updateWalletBalancesDisplay();
+
+            // Generate cryptographic Txn Hash representation
+            const fundTxnId = `DEP_UPI${Math.random().toString(36).substr(2, 6).toUpperCase()}`;
+            addTransactionToLedger(fundTxnId, "Pre-funded Wallet Deposit via Instant UPI", amount);
+            
+            fundInput.value = '';
+            showToast(`Deposited ₹${amount.toLocaleString('en-IN')} successfully!`, "success");
+        }
+
+        function addTransactionToLedger(id, title, amount) {
+            const ledger = document.getElementById('wallet-ledger-items');
+            const txnDiv = document.createElement('div');
+            txnDiv.className = "p-4 flex justify-between items-center text-xs border-b border-slate-850";
+
+            const formattedAmt = amount > 0 ? `+₹${amount.toLocaleString('en-IN')}.00` : `-₹${Math.abs(amount).toLocaleString('en-IN')}.00`;
+            const colorClass = amount > 0 ? "text-emerald-400" : "text-rose-400";
+
+            txnDiv.innerHTML = `
+                <div>
+                    <span class="font-bold text-white block">${title}</span>
+                    <span class="text-[10px] text-slate-500 font-mono">ID: ${id} | Active UTC</span>
+                </div>
+                <div class="${colorClass} font-extrabold font-mono text-sm">${formattedAmt}</div>
+            `;
+
+            ledger.insertBefore(txnDiv, ledger.firstChild);
+        }
+
+
+        function handleChatEnter(event) {
+            if (event.key === 'Enter') {
+                sendUserTextMessage();
+            }
+        }
+
+        function sendUserTextMessage() {
+            const input = document.getElementById('chat-input-field');
+            const query = input.value.trim();
+
+            if (!query) return;
+
+            // Render User bubble
+            renderChatBubble(query, 'user');
+            input.value = '';
+
+            // Bot response simulator
+            setTimeout(() => {
+                respondBotWithAI(query);
+            }, 600);
+        }
+
+        function askBot(presetQuery, element) {
+            renderChatBubble(presetQuery, 'user');
+            if (element) {
+                element.style.display = 'none'; // hide chip to clear space
+            }
+            setTimeout(() => {
+                respondBotWithAI(presetQuery);
+            }, 600);
+        }
+
+        function renderChatBubble(text, sender) {
+            const scroller = document.getElementById('chat-scroller');
+            const bubbleDiv = document.createElement('div');
+
+            if (sender === 'user') {
+                bubbleDiv.className = "flex items-start gap-2.5 max-w-[85%] ml-auto justify-end";
+                bubbleDiv.innerHTML = `
+                    <div class="bg-cyan-500 text-slate-950 p-3 rounded-xl border border-cyan-400 font-semibold">
+                        ${text}
+                    </div>
+                `;
+            } else {
+                bubbleDiv.className = "flex items-start gap-2.5 max-w-[85%]";
+                bubbleDiv.innerHTML = `
+                    <div class="w-6 h-6 rounded-full bg-slate-800 text-cyan-400 flex items-center justify-center flex-shrink-0 text-[10px]">
+                        <i data-lucide="bot" class="w-3.5 h-3.5"></i>
+                    </div>
+                    <div class="bg-slate-850 p-3 rounded-xl border border-slate-800 text-slate-300">
+                        ${text}
+                    </div>
+                `;
+            }
+
+            scroller.appendChild(bubbleDiv);
+            scroller.scrollTop = scroller.scrollHeight; // push view down
+            lucide.createIcons();
+        }
+
+        function respondBotWithAI(query) {
+            let reply = "I have queried our game integration clusters with your message. If you are experiencing transaction pending issues, please provide your TXN ID reference in our 'Track Order' dashboard to verify active network handshakes.";
+
+            const q = query.toLowerCase();
+
+            if (q.includes('deliver') || q.includes('pass') || q.includes('diamond')) {
+                reply = "Our delivery script relies on direct SSL endpoint signals. If payment gateway has logged success, voucher injection completes inside 10 seconds. Check the 'Track Order' module to trace your unique ID delivery queue status.";
+            } else if (q.includes('payment') || q.includes('speed') || q.includes('gateway') || q.includes('time')) {
+                reply = "UPI gateway status is evaluated immediately via automatic server webhooks. If your bank states funds debited but Xavier store does not approve within 5 minutes, our refund matrix returns the transaction balance to your source automatically.";
+            } else if (q.includes('refund') || q.includes('cancel') || q.includes('matrix')) {
+                reply = "Voucher allocations that succeed player UID parameters are permanently locked as delivered and cannot be refunded. However, transactions targeting invalid or non-existent UID servers can be manually cancelled for store credit by notifying our API support team.";
+            }
+
+            renderChatBubble(reply, 'bot');
+        }
+
+
+        function showToast(message, type = 'info') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            
+            let color = 'bg-slate-900 border-slate-800 text-white';
+            let icon = 'info';
+            
+            if (type === 'success') {
+                color = 'bg-slate-900 border-emerald-500/30 text-slate-100';
+                icon = 'check-circle-2';
+            } else if (type === 'error') {
+                color = 'bg-slate-900 border-rose-500/30 text-rose-300';
+                icon = 'alert-triangle';
+            }
+
+            toast.className = `flex items-center gap-3 p-4 rounded-xl border ${color} shadow-2xl transition duration-300 transform translate-y-2 opacity-0 animate-fade-in`;
+            toast.innerHTML = `
+                <i data-lucide="${icon}" class="w-5 h-5 flex-shrink-0 text-cyan-400"></i>
+                <div class="text-xs font-bold leading-tight flex-grow">${message}</div>
+                <button onclick="this.parentElement.remove()" class="text-slate-400 hover:text-white transition">
+                    <i data-lucide="x" class="w-3.5 h-3.5"></i>
+                </button>
+            `;
+
+            container.appendChild(toast);
+            lucide.createIcons();
+
+            // Slide animate in
+            setTimeout(() => {
+                toast.classList.remove('translate-y-2', 'opacity-0');
+            }, 10);
+
+            // Auto purge after 4 seconds
+            setTimeout(() => {
+                toast.classList.add('translate-y-2', 'opacity-0');
+                setTimeout(() => { toast.remove(); }, 300);
+            }, 4000);
+        }
+
+        function showCustomAlert(title, message) {
+            const overlay = document.createElement('div');
+            overlay.className = "fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4";
+            
+            overlay.innerHTML = `
+                <div class="bg-slate-900 border border-slate-800 w-full max-w-sm rounded-2xl overflow-hidden shadow-2xl p-6 space-y-4">
+                    <div class="flex items-center gap-2.5 border-b border-slate-850 pb-3">
+                        <i data-lucide="shield-alert" class="w-5 h-5 text-cyan-400"></i>
+                        <h4 class="font-extrabold text-sm text-white uppercase tracking-wider">${title}</h4>
+                    </div>
+                    <p class="text-xs text-slate-300 leading-relaxed">${message}</p>
+                    <div class="flex justify-end pt-2">
+                        <button onclick="this.closest('.fixed').remove()" class="bg-cyan-500 hover:bg-cyan-400 text-slate-950 text-xs font-extrabold px-5 py-2.5 rounded-lg transition duration-200 uppercase tracking-widest">
+                            Confirm
+                        </button>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(overlay);
+            lucide.createIcons();
+<div>encrypted.html:C:\Users\Hamwang Angh\OneDrive\Desktop\HTML Coding </div>
+        }
+    </script>
+</body>
+</html>
